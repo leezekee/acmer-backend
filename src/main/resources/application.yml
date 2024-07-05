@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    active: dev
+  jackson:
+    default-property-inclusion: non_null
+
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
