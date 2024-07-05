@@ -24,7 +24,6 @@ public class UserContext {
     }
 
     public User getCurrentUser() {
-
         Map<String, Object> claims = ThreadLocalUtil.get();
         Integer id = (Integer) claims.get("id");
         return userService.getUserById(id);
