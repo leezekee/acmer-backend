@@ -5,5 +5,9 @@ import top.zekee.acmerbackend.pojo.User;
 
 @Mapper
 public interface UserMapper {
-    public User getUserById(Integer id);
+    User getUserById(Integer id);
+
+    void addUser(User user);
+
+    User findUserByUsername(String username);
 }

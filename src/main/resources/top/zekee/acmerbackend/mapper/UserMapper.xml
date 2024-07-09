@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="top.zekee.acmerbackend.mapper.UserMapper">
 
+<mapper namespace="top.zekee.acmerbackend.mapper.UserMapper">
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="id" parameterType="top.zekee.acmerbackend.pojo.User" >
+        insert into tb_user (school, clazz, grade, name, award, username, status, cf_ranking, cf_contest, cf_accept,
+                             cf_makeup, auth, password)
+        values (#{school}, #{clazz}, #{grade}, #{name}, #{award}, #{username}, #{status}, #{cfRanking}, #{cfContest},
+                #{cfAccept}, #{cfMakeup}, 1, #{password})
+    </insert>
+
+    <select id="getUserById" resultType="top.zekee.acmerbackend.pojo.User">
+        select *
+        from tb_user
+        where id = #{id}
+    </select>
+
+    <select id="findUserByUsername" resultType="top.zekee.acmerbackend.pojo.User">
+        select *
+        from tb_user
+        where username = #{username}
+    </select>
 </mapper>

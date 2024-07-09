@@ -6,8 +6,8 @@ package top.zekee.acmerbackend.pojo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@AllArgsConstructor
 @Data
+@AllArgsConstructor
 public class Response {
     private Integer code;//业务状态码  0-成功  1-失败
     private String message;//提示信息

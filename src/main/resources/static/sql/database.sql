@@ -9,7 +9,7 @@ CREATE TABLE tb_user
 (
     id         INT PRIMARY KEY AUTO_INCREMENT, -- 用户ID
     school     VARCHAR(255),                   -- 学校
-    class      VARCHAR(255),                   -- 班级
+    clazz      VARCHAR(255),                   -- 班级
     grade      VARCHAR(255),                   -- 年级
     name       VARCHAR(255),                   -- 真实姓名
     award      VARCHAR(255),                   -- 奖项
@@ -18,7 +18,9 @@ CREATE TABLE tb_user
     cf_ranking INT,                            -- cf分数
     cf_contest INT,                            -- cf比赛次数
     cf_accept  INT,                            -- cf通过题数
-    cf_makeup  INT                             -- cf补题通过数
+    cf_makeup  INT,                            -- cf补题通过数
+    auth       INT,                            -- 身份认证
+    password   VARCHAR(255)                    -- 密码
 );
 
 -- 题目表
@@ -50,11 +52,11 @@ CREATE TABLE tb_user_ranking
     school         VARCHAR(255),                   -- 学校
     class          VARCHAR(255),                   -- 班级
     username       VARCHAR(255),                   -- 用户名
-    contest_number   INT,                            -- 比赛次数
-    accept_number INT,                            -- 解题数
-    makeup_number INT,                            -- 补题数
+    contest_number INT,                            -- 比赛次数
+    accept_number  INT,                            -- 解题数
+    makeup_number  INT,                            -- 补题数
     owner          VARCHAR(255),                   -- 账户持有者
-    account_type    VARCHAR(255)                    -- 帐号类型
+    account_type   VARCHAR(255)                    -- 帐号类型
 );
 
 
