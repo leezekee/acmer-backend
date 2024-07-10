@@ -24,24 +24,29 @@ CREATE TABLE tb_user
 );
 
 -- 题目表
-CREATE TABLE tb_problem
+CREATE TABLE tb_problems
 (
-    id             INT PRIMARY KEY AUTO_INCREMENT, -- 题目ID
-    contest_type   VARCHAR(255),                   -- 比赛类型
-    problem_number VARCHAR(255),                   -- 题目编号
-    problem_title  VARCHAR(255),                   -- 题目名称
-    difficulty     INT,                            -- 题目难度
-    tags           VARCHAR(255)                    -- 题目标签
+    id        INT PRIMARY KEY AUTO_INCREMENT,
+    contestId INT,
+    `index`   VARCHAR(255),
+    name      VARCHAR(255),
+    `type`    VARCHAR(255),
+    points    FLOAT,
+    rating    INT,
+    tags      VARCHAR(255)
 );
 
 -- 比赛表
 CREATE TABLE tb_contest
 (
-    id           INT PRIMARY KEY AUTO_INCREMENT, -- 比赛ID
-    name         VARCHAR(255),                   -- 比赛名称
-    startTime    DATETIME,                       -- 开始时间
-    duration     VARCHAR(255),                   -- 持续时间
-    participants INT                             -- 参与人数
+    id                  INT PRIMARY KEY, -- 比赛ID
+    name                VARCHAR(255),                   -- 比赛名称
+    startTimeSeconds    BIGINT,                         -- 开始时间
+    durationSeconds      BIGINT,                         -- 持续时间
+    relativeTimeSeconds BIGINT,                         -- 相对时间
+    phase               VARCHAR(255),                   -- 比赛阶段
+    type                VARCHAR(255),                   -- 比赛类型
+    frozen              BOOL                            -- 是否冻结
 );
 
 -- 用户排名表
@@ -57,6 +62,46 @@ CREATE TABLE tb_user_ranking
     makeup_number  INT,                            -- 补题数
     owner          VARCHAR(255),                   -- 账户持有者
     account_type   VARCHAR(255)                    -- 帐号类型
+);
+
+-- 题目统计数据
+CREATE TABLE tb_problem_statistics
+(
+    id           INT PRIMARY KEY AUTO_INCREMENT, -- 统计ID
+    contest_id   INT,
+    `index`      VARCHAR(10),
+    solved_count INT
+);
+
+CREATE TABLE tb_cf_user
+(
+    id                      INT PRIMARY KEY AUTO_INCREMENT,
+    handle                  VARCHAR(255) NOT NULL,
+    email                   VARCHAR(255),
+    vkId                    VARCHAR(255),
+    openId                  VARCHAR(255),
+    firstName               VARCHAR(255),
+    lastName                VARCHAR(255),
+    country                 VARCHAR(255),
+    city                    VARCHAR(255),
+    organization            VARCHAR(255),
+    contribution            INT,
+    `rank`                  VARCHAR(255),
+    rating                  INT,
+    maxRank                 VARCHAR(255),
+    maxRating               INT,
+    lastOnlineTimeSeconds   BIGINT,
+    registrationTimeSeconds BIGINT,
+    friendOfCount           INT,
+    avatar                  VARCHAR(255),
+    titlePhoto              VARCHAR(255)
+);
+
+CREATE TABLE tb_cf_user_and_user
+(
+    id         INT PRIMARY KEY AUTO_INCREMENT,
+    user_id    INT,
+    cf_user_id INT
 );
 
 
