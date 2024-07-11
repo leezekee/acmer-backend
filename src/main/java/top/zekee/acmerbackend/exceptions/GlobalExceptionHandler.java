@@ -30,6 +30,28 @@ public class GlobalExceptionHandler {
         return Response.error(Code.UNKNOWN_ERROR, "服务器繁忙，请稍后再试");
     }
 
+    @ExceptionHandler(TokenExpiredException.class)
+    public Response handleTokenExpiredException(TokenExpiredException exception) {
+//        log.error(getStackTraceInfo(exception));
+        return Response.error(Code.TOKEN_EXPIRED, exception.getMessage());
+    }
+
+    @ExceptionHandler(InsufficientPermissionException.class)
+    public Response handleInsufficientPermissionException(InsufficientPermissionException exception) {
+//        log.error(getStackTraceInfo(exception));
+        return Response.error(Code.INSUFFICIENT_PERMISSIONS, exception.getMessage());
+    }
+
+    @ExceptionHandler(MissingTokenException.class)
+    public Response handleMissingTokenException(MissingTokenException exception) {
+        return Response.error(Code.INVALID_TOKEN, exception.getMessage());
+    }
+
+    @ExceptionHandler(FrequentRequestException.class)
+    public Response handleFrequentRequestException(FrequentRequestException exception) {
+        return Response.error(Code.FREQUENT_REQUEST, exception.getMessage());
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public Response handleConstraintViolationException(ConstraintViolationException exception) {
 //        Set<ConstraintViolation<?>> violations = exception.getConstraintViolations();

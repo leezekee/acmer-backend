@@ -2,5 +2,36 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="top.zekee.acmerbackend.mapper.ContestMapper">
-
+    <select id="findContests" resultType="top.zekee.acmerbackend.pojo.Contest"
+            parameterType="top.zekee.acmerbackend.dto.ContestDto">
+        SELECT * FROM tb_contest
+        <where>
+            <if test="name != null and name != ''">
+                AND name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="startTimeSeconds != null">
+                AND startTimeSeconds = #{startTimeSeconds}
+            </if>
+            <if test="durationSeconds != null">
+                AND durationSeconds = #{durationSeconds}
+            </if>
+            <if test="relativeTimeSeconds != null">
+                <if test="relativeTimeSeconds &gt;= 0">
+                    AND relativeTimeSeconds &lt; #{relativeTimeSeconds}
+                </if>
+                <if test="relativeTimeSeconds &lt; 0">
+                    AND relativeTimeSeconds &gt; #{relativeTimeSeconds}
+                </if>
+            </if>
+            <if test="phase != null and phase != ''">
+                AND phase LIKE CONCAT('%',#{phase},'%')
+            </if>
+            <if test="type != null and type != ''">
+                AND type LIKE CONCAT('%',#{type},'%')
+            </if>
+            <if test="frozen != null">
+                AND frozen = #{frozen}
+            </if>
+        </where>
+    </select>
 </mapper>

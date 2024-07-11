@@ -23,5 +23,5 @@ public class User {
     private Integer cfContest;
     private Integer cfAccept;
     private Integer cfMakeup;
-    private String Auth;
+    private Integer Auth;
 }

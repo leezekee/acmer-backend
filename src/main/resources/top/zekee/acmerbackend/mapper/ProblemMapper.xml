@@ -3,4 +3,34 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="top.zekee.acmerbackend.mapper.ProblemMapper">
 
+    <select id="findProblems" resultType="top.zekee.acmerbackend.pojo.Problem"
+            parameterType="top.zekee.acmerbackend.dto.ProblemFilterDto">
+        select * from tb_problems
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="contestId != null">
+                and contest_id = #{contestId}
+            </if>
+            <if test="index != null">
+                and `index` = #{index}
+            </if>
+            <if test="name != null">
+                and name like concat('%',#{name},';%')
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+            <if test="points != null">
+                and points = #{points}
+            </if>
+            <if test="rating != null">
+                and rating = #{rating}
+            </if>
+            <if test="tags != null">
+                and tags like concat('%',#{tags},';%')
+            </if>
+        </where>
+    </select>
 </mapper>

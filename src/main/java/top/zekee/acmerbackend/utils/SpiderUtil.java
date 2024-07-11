@@ -2,7 +2,7 @@ package top.zekee.acmerbackend.utils;
 
 import org.springframework.web.client.RestTemplate;
 import top.zekee.acmerbackend.dto.CFProblemDto;
-import top.zekee.acmerbackend.dto.ContestDto;
+import top.zekee.acmerbackend.dto.CFContestDto;
 import top.zekee.acmerbackend.pojo.ProblemStatistic;
 import top.zekee.acmerbackend.pojo.Problem;
 import top.zekee.acmerbackend.vo.ContestsVo;
@@ -50,7 +50,7 @@ public class SpiderUtil {
 
     public ContestsVo getCFContests() {
         RestTemplate restTemplate = new RestTemplate();
-        ContestDto result = restTemplate.getForObject(CONTEST_URL, ContestDto.class);
+        CFContestDto result = restTemplate.getForObject(CONTEST_URL, CFContestDto.class);
 
         if (result == null || !result.getStatus().equals("OK")) {
             return null;
