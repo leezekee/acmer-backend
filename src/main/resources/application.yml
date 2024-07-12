@@ -9,10 +9,6 @@ server:
     context-path: /api
 
 
-mybatis:
-  configuration:
-    map-underscore-to-camel-case: true
-
 # springdoc-openapi项目配置
 springdoc:
   default-flat-param-object: true

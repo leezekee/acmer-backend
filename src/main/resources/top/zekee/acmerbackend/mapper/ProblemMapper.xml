@@ -32,5 +32,11 @@
                 and tags like concat('%',#{tags},';%')
             </if>
         </where>
+        <if test="orderBy != null and orderBy != ''">
+            order by ${orderBy}
+            <if test="order != null and order != ''">
+                ${order}
+            </if>
+        </if>
     </select>
 </mapper>

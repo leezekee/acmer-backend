@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CFUser {
+    private Integer id;
     private String handle;
     private String email;
     private String vkId;
@@ -27,4 +28,6 @@ public class CFUser {
     private Integer friendOfCount;
     private String avatar;
     private String titlePhoto;
+    private Integer holder;
+    private Integer accountType;
 }

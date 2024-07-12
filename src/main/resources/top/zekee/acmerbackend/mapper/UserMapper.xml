@@ -3,14 +3,60 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="top.zekee.acmerbackend.mapper.UserMapper">
-    <insert id="addUser" useGeneratedKeys="true" keyProperty="id" parameterType="top.zekee.acmerbackend.pojo.User" >
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="id" parameterType="top.zekee.acmerbackend.pojo.User">
         insert into tb_user (school, clazz, grade, name, award, username, status, cf_ranking, cf_contest, cf_accept,
                              cf_makeup, auth, password)
         values (#{school}, #{clazz}, #{grade}, #{name}, #{award}, #{username}, #{status}, #{cfRanking}, #{cfContest},
                 #{cfAccept}, #{cfMakeup}, 1, #{password})
     </insert>
+    <insert id="addCFAccount">
+        insert into tb_cf_user (handle, holder, account_type)
+        values (#{handle}, #{holder}, #{accountType})
+    </insert>
+    <update id="updateUser" parameterType="top.zekee.acmerbackend.dto.UserUpdateDto">
+        update tb_user u
+        <set>
+            <if test="school != null and school != ''">
+                u.school = #{school},
+            </if>
+            <if test="clazz != null and clazz != ''">
+                u.clazz = #{clazz},
+            </if>
+            <if test="grade != null and grade != ''">
+                u.grade = #{grade},
+            </if>
+            <if test="name != null and name != ''">
+                u.name = #{name},
+            </if>
+            <if test="award != null and award != ''">
+                u.award = #{award},
+            </if>
+            <if test="password != null and password != ''">
+                u.password = #{password},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateUserRankById">
+        update tb_user
+        set cf_ranking = #{ranking}
+        where id = #{id}
+    </update>
+    <insert id="updateAccountType">
+        replace into tb_cf_user
+        (id, handle, holder, account_type)
+        values
+        <foreach collection="cfUsers" item="cfUser" separator=",">
+            (#{cfUser.id}, #{cfUser.handle}, #{cfUser.holder}, #{cfUser.accountType})
+        </foreach>
+    </insert>
+    <delete id="deleteCFAccount">
+        delete
+        from tb_cf_user
+        where handle = #{handle}
+    </delete>
 
-    <select id="getUserById" resultType="top.zekee.acmerbackend.pojo.User">
+    <select id="findUserById" resultType="top.zekee.acmerbackend.pojo.User">
         select *
         from tb_user
         where id = #{id}
@@ -20,5 +66,19 @@
         select *
         from tb_user
         where username = #{username}
+    </select>
+    <select id="findCFAccountByHandle" resultType="top.zekee.acmerbackend.pojo.CFUser">
+        select *
+        from tb_cf_user
+        where handle = #{handle}
+    </select>
+    <select id="findCFAccountByHolder" resultType="top.zekee.acmerbackend.pojo.CFUser">
+        select *
+        from tb_cf_user
+        where holder = #{holder}
+    </select>
+    <select id="findAll" resultType="top.zekee.acmerbackend.pojo.CFUser">
+        select *
+        from tb_cf_user
     </select>
 </mapper>

@@ -11,6 +11,7 @@ import top.zekee.acmerbackend.pojo.Problem;
 import top.zekee.acmerbackend.pojo.Response;
 import top.zekee.acmerbackend.service.ProblemService;
 import top.zekee.acmerbackend.pojo.PageBean;
+import top.zekee.acmerbackend.vo.ProblemVo;
 
 @RestController
 @RequestMapping("/problem")
@@ -26,7 +27,7 @@ public class ProblemController {
     @GetMapping("/list")
     @Operation(summary = "获取题目列表")
     public Response getProblemList(@Valid ProblemFilterDto problemFilterDto) {
-        PageBean<Problem> problems = problemService.findProblems(problemFilterDto);
+        PageBean<ProblemVo> problems = problemService.findProblems(problemFilterDto);
         return Response.success("获取题目成功", problems);
     }
 }

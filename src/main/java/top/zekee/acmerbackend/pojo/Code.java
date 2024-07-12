@@ -15,4 +15,5 @@ public class Code {
     public static final Integer INSUFFICIENT_PERMISSIONS = 20048;
     public static final Integer FREQUENT_REQUEST = 20049;
     public final static Integer UNKNOWN_ERROR = 20050;
+    public final static Integer PERMISSION_DENIED = 20051;
 }

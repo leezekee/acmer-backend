@@ -3,24 +3,24 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="top.zekee.acmerbackend.mapper.ContestMapper">
     <select id="findContests" resultType="top.zekee.acmerbackend.pojo.Contest"
-            parameterType="top.zekee.acmerbackend.dto.ContestDto">
+            parameterType="top.zekee.acmerbackend.dto.ContestFilterDto">
         SELECT * FROM tb_contest
         <where>
             <if test="name != null and name != ''">
                 AND name LIKE CONCAT('%',#{name},'%')
             </if>
             <if test="startTimeSeconds != null">
-                AND startTimeSeconds = #{startTimeSeconds}
+                AND start_time_seconds = #{startTimeSeconds}
             </if>
             <if test="durationSeconds != null">
-                AND durationSeconds = #{durationSeconds}
+                AND duartion_seconds = #{durationSeconds}
             </if>
             <if test="relativeTimeSeconds != null">
                 <if test="relativeTimeSeconds &gt;= 0">
-                    AND relativeTimeSeconds &lt; #{relativeTimeSeconds}
+                    AND relative_time_seconds &lt; #{relativeTimeSeconds}
                 </if>
                 <if test="relativeTimeSeconds &lt; 0">
-                    AND relativeTimeSeconds &gt; #{relativeTimeSeconds}
+                    AND relative_time_seconds &gt; #{relativeTimeSeconds}
                 </if>
             </if>
             <if test="phase != null and phase != ''">
@@ -33,5 +33,11 @@
                 AND frozen = #{frozen}
             </if>
         </where>
+        <if test="orderBy != null and orderBy != ''">
+            ORDER BY ${orderBy}
+            <if test="order != null and order != ''">
+                ${order}
+            </if>
+        </if>
     </select>
 </mapper>

@@ -27,7 +27,7 @@ CREATE TABLE tb_user
 CREATE TABLE tb_problems
 (
     id        INT PRIMARY KEY AUTO_INCREMENT,
-    contestId INT,
+    contest_id INT,
     `index`   VARCHAR(255),
     name      VARCHAR(255),
     `type`    VARCHAR(255),
@@ -41,9 +41,9 @@ CREATE TABLE tb_contest
 (
     id                  INT PRIMARY KEY, -- 比赛ID
     name                VARCHAR(255),                   -- 比赛名称
-    startTimeSeconds    BIGINT,                         -- 开始时间
-    durationSeconds      BIGINT,                         -- 持续时间
-    relativeTimeSeconds BIGINT,                         -- 相对时间
+    start_time_seconds    BIGINT,                         -- 开始时间
+    duration_seconds      BIGINT,                         -- 持续时间
+    relative_time_seconds BIGINT,                         -- 相对时间
     phase               VARCHAR(255),                   -- 比赛阶段
     type                VARCHAR(255),                   -- 比赛类型
     frozen              BOOL                            -- 是否冻结
@@ -73,28 +73,32 @@ CREATE TABLE tb_problem_statistics
     solved_count INT
 );
 
+drop table tb_cf_user;
+
 CREATE TABLE tb_cf_user
 (
     id                      INT PRIMARY KEY AUTO_INCREMENT,
-    handle                  VARCHAR(255) NOT NULL,
+    handle                  VARCHAR(255) NOT NULL UNIQUE,
     email                   VARCHAR(255),
     vkId                    VARCHAR(255),
     openId                  VARCHAR(255),
-    firstName               VARCHAR(255),
-    lastName                VARCHAR(255),
+    first_ame               VARCHAR(255),
+    last_ame                VARCHAR(255),
     country                 VARCHAR(255),
     city                    VARCHAR(255),
     organization            VARCHAR(255),
     contribution            INT,
     `rank`                  VARCHAR(255),
     rating                  INT,
-    maxRank                 VARCHAR(255),
-    maxRating               INT,
-    lastOnlineTimeSeconds   BIGINT,
-    registrationTimeSeconds BIGINT,
-    friendOfCount           INT,
+    max_rank                 VARCHAR(255),
+    max_rating               INT,
+    last_online_time_seconds   BIGINT,
+    registration_time_seconds BIGINT,
+    friend_of_count           INT,
     avatar                  VARCHAR(255),
-    titlePhoto              VARCHAR(255)
+    title_photo              VARCHAR(255),
+    holder                  VARCHAR(255),
+    account_type            INT
 );
 
 CREATE TABLE tb_cf_user_and_user

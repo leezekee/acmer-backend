@@ -5,7 +5,7 @@
 
     <insert id="updateProblems" useGeneratedKeys="true" keyProperty="id">
         replace into tb_problems
-            (contestId, `index`, name, type, points, rating, tags)
+            (contest_id, `index`, name, type, points, rating, tags)
         VALUES
             <foreach collection="problems" item="problem" separator=",">
                 (#{problem.contestId}, #{problem.index}, #{problem.name}, #{problem.type}, #{problem.points}, #{problem.rating}, #{problem.tags})
@@ -21,11 +21,25 @@
     </insert>
     <insert id="updateContests">
         replace into tb_contest
-        (id, name, startTimeSeconds, durationSeconds, relativeTimeSeconds, phase, type, frozen)
+        (id, name, start_time_seconds, duration_seconds, relative_time_seconds, phase, type, frozen)
         VALUES
         <foreach collection="contests" item="contest" separator=",">
             (#{contest.id}, #{contest.name}, #{contest.startTimeSeconds}, #{contest.durationSeconds},
             #{contest.relativeTimeSeconds}, #{contest.phase}, #{contest.type}, #{contest.frozen})
+        </foreach>
+    </insert>
+    <insert id="updateCFUsers">
+        replace into tb_cf_user
+        (handle, email, vkId, openId, first_ame, last_ame, country, city, organization, contribution, `rank`, rating,
+        max_rank, max_rating, last_online_time_seconds, registration_time_seconds, friend_of_count, avatar,
+        title_photo, holder, account_type)
+        values
+        <foreach collection="cfUsers" item="cfUser" separator=",">
+            (#{cfUser.handle}, #{cfUser.email}, #{cfUser.vkId}, #{cfUser.openId}, #{cfUser.firstName},
+            #{cfUser.lastName}, #{cfUser.country}, #{cfUser.city}, #{cfUser.organization}, #{cfUser.contribution},
+            #{cfUser.rank}, #{cfUser.rating}, #{cfUser.maxRank}, #{cfUser.maxRating}, #{cfUser.lastOnlineTimeSeconds},
+            #{cfUser.registrationTimeSeconds}, #{cfUser.friendOfCount}, #{cfUser.avatar}, #{cfUser.titlePhoto},
+            #{cfUser.holder}, #{cfUser.accountType})
         </foreach>
     </insert>
 

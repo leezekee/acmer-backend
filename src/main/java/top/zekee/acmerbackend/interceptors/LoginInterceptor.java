@@ -67,7 +67,6 @@ public class LoginInterceptor implements HandlerInterceptor {
                 throw new InsufficientPermissionException();
             }
         }
-
         ThreadLocalUtil.set(claims);
         return true;
     }

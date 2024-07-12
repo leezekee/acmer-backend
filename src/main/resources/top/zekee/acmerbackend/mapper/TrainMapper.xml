@@ -3,4 +3,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="top.zekee.acmerbackend.mapper.TrainMapper">
 
+    <select id="getRandomProblems" resultType="top.zekee.acmerbackend.pojo.Problem">
+        SELECT *
+        FROM tb_problems
+        WHERE id >= ((SELECT MAX(id) FROM tb_problems) - (SELECT MIN(id) FROM tb_problems)) * RAND() +
+        (SELECT MIN(id) FROM tb_problems) and rating &gt;= #{min} and rating &lt;= #{max}
+        LIMIT 10;
+    </select>
 </mapper>

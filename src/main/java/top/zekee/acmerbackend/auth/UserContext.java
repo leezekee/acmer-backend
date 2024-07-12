@@ -1,5 +1,6 @@
 package top.zekee.acmerbackend.auth;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -13,19 +14,19 @@ import top.zekee.acmerbackend.utils.ThreadLocalUtil;
 import java.util.Map;
 
 @Component
+@Slf4j
 public class UserContext {
-    StringRedisTemplate stringRedisTemplate;
     UserService userService;
 
     @Autowired
-    public UserContext(StringRedisTemplate stringRedisTemplate, UserService userService) {
-        this.stringRedisTemplate = stringRedisTemplate;
+    public UserContext(UserService userService) {
         this.userService = userService;
     }
 
     public User getCurrentUser() {
         Map<String, Object> claims = ThreadLocalUtil.get();
         Integer id = (Integer) claims.get("id");
-        return userService.getUserById(id);
+        log.info("Current id: {}", id);
+        return userService.findUserById(id);
     }
 }

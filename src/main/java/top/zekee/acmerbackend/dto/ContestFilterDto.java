@@ -2,36 +2,31 @@ package top.zekee.acmerbackend.dto;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.constraints.NotNull;
-import jdk.jfr.Enabled;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestParam;
 import top.zekee.acmerbackend.anno.EnumValue;
 
-@Data
-@Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProblemFilterDto {
+@Data
+public class ContestFilterDto {
     @NotNull(message = "pageNum不能为空")
     Integer pageNum;
     @NotNull(message = "pageSize不能为空")
     Integer pageSize;
-
-    Integer id;
-    Integer contestId;
-    String index;
-    String name;
-    String type;
-    Float points;
-    Integer rating;
-    String tags;
+    Integer id;                  // 比赛ID
+    String name;                 // 比赛名称
+    Long startTimeSeconds;       // 开始时间
+    Long durationSeconds;         // 持续时间
+    Long relativeTimeSeconds;    // 相对时间
+    String phase;                // 比赛阶段
+    String type;                 // 比赛类型
+    Boolean frozen;              // 是否冻结
 
     @EnumValue(enumClass = OrderByEnum.class, enumMethod = "isValid")
-    @Parameter(description = "排序方式, 可选值: id, contest_id, index, name, type, points, rating, tags")
-    String orderBy;
+    @Parameter(description = "排序方式, 可选值: id, name, start_time_seconds, duration_seconds, relative_time_seconds, phase, type, frozen")
+    String orderBy;              // 排序方式
 
     @EnumValue(enumClass = OrderEnum.class, enumMethod = "isValid")
     @Parameter(description = "排序方式, 可选值: asc, desc")
@@ -39,17 +34,16 @@ public class ProblemFilterDto {
 
     public enum OrderByEnum {
         id,
-        contest_id,
-        index,
         name,
+        start_time_seconds,
+        duration_seconds,
+        relative_time_seconds,
+        phase,
         type,
-        points,
-        rating,
-        tags;
+        frozen;
 
         public static boolean isValid(String name) {
             for (OrderByEnum userStatusEnum : OrderByEnum.values()) {
-                log.info("userStatusEnum: {}", userStatusEnum);
                 if (userStatusEnum.name().equals(name)) {
                     return true;
                 }

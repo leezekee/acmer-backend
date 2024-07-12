@@ -1,5 +1,6 @@
 package top.zekee.acmerbackend.exceptions;
 
+import jakarta.validation.ValidationException;
 import top.zekee.acmerbackend.pojo.Code;
 import top.zekee.acmerbackend.pojo.Response;
 import jakarta.validation.ConstraintViolationException;
@@ -20,20 +21,27 @@ import java.util.Objects;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-    @ExceptionHandler(Exception.class)
-    public Response handleException(Exception exception) {
-//        log.error(Arrays.toString(exception.getStackTrace()));
-        log.error(getStackTraceInfo(exception));
-        log.error(exception.toString());
-        log.error(exception.getMessage());
-//        exception.printStackTrace();
-        return Response.error(Code.UNKNOWN_ERROR, "服务器繁忙，请稍后再试");
-    }
-
     @ExceptionHandler(TokenExpiredException.class)
     public Response handleTokenExpiredException(TokenExpiredException exception) {
 //        log.error(getStackTraceInfo(exception));
         return Response.error(Code.TOKEN_EXPIRED, exception.getMessage());
+    }
+
+    @ExceptionHandler(EnumTypeException.class)
+    public Response handleEnumTypeException(EnumTypeException exception) {
+//        log.error(getStackTraceInfo(exception));
+        return Response.error(Code.WRONG_PARAMETER, exception.getMessage());
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public Response handleValidationException(ValidationException exception) {
+        // get cause of the exception
+        Throwable cause = exception.getCause();
+        if (cause instanceof EnumTypeException) {
+            return handleEnumTypeException((EnumTypeException) cause);
+        } else {
+            return handleException((Exception) cause);
+        }
     }
 
     @ExceptionHandler(InsufficientPermissionException.class)
@@ -89,6 +97,16 @@ public class GlobalExceptionHandler {
         return Response.error(Code.WRONG_METHOD, exception.getMessage());
     }
 
+    @ExceptionHandler(Exception.class)
+    public Response handleException(Exception exception) {
+//        log.error(Arrays.toString(exception.getStackTrace()));
+        log.error(getStackTraceInfo(exception));
+        log.error(exception.toString());
+        log.error(exception.getMessage());
+//        exception.printStackTrace();
+        return Response.error(Code.UNKNOWN_ERROR, "服务器繁忙，请稍后再试");
+    }
+
     public static String getStackTraceInfo(Exception e) {
 
         StringWriter sw = null;
@@ -98,6 +116,7 @@ public class GlobalExceptionHandler {
             sw = new StringWriter();
             pw = new PrintWriter(sw);
             e.printStackTrace(pw);//将出错的栈信息输出到printWriter中
+//            log.error(e.getMessage());
             pw.flush();
             sw.flush();
 
@@ -110,7 +129,8 @@ public class GlobalExceptionHandler {
                 try {
                     sw.close();
                 } catch (IOException e1) {
-                    e1.printStackTrace();
+//                    e1.printStackTrace();
+                    log.error(e1.getMessage());
                 }
             }
             if (pw != null) {

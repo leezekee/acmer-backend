@@ -3,14 +3,20 @@ package top.zekee.acmerbackend.utils;
 import org.springframework.web.client.RestTemplate;
 import top.zekee.acmerbackend.dto.CFProblemDto;
 import top.zekee.acmerbackend.dto.CFContestDto;
+import top.zekee.acmerbackend.dto.CFUserInfoDto;
+import top.zekee.acmerbackend.pojo.CFResultBean;
 import top.zekee.acmerbackend.pojo.ProblemStatistic;
 import top.zekee.acmerbackend.pojo.Problem;
+import top.zekee.acmerbackend.vo.CFUserInfoVo;
 import top.zekee.acmerbackend.vo.ContestsVo;
 import top.zekee.acmerbackend.vo.ProblemsVo;
+
+import java.util.List;
 
 public class SpiderUtil {
     static String PROBLEM_URL = "https://codeforces.com/api/problemset.problems";
     static String CONTEST_URL = "https://codeforces.com/api/contest.list";
+    static String USER_INFO_URL = "https://codeforces.com/api/user.info?handles=";
 
     public ProblemsVo getCFProblems() {
         RestTemplate restTemplate = new RestTemplate();
@@ -58,6 +64,25 @@ public class SpiderUtil {
 
         ContestsVo response = new ContestsVo();
         response.setContests(result.getResult());
+
+        return response;
+    }
+
+    public CFUserInfoVo getCFUserInfo(List<String> handles) {
+        StringBuilder params = new StringBuilder();
+        for (String handle : handles) {
+            params.append(handle).append(";");
+        }
+
+        RestTemplate restTemplate = new RestTemplate();
+        CFUserInfoDto result = restTemplate.getForObject(USER_INFO_URL + params, CFUserInfoDto.class);
+
+        if (result == null || !result.getStatus().equals("OK")) {
+            return null;
+        }
+
+        CFUserInfoVo response = new CFUserInfoVo();
+        response.setCfUsers(result.getResult());
 
         return response;
     }
