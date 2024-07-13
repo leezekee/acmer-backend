@@ -21,6 +21,7 @@ public class UserVo {
     private String name;
     private String username;
     private String password;
+    private String award;
     private CFAccount cfAccount;
 
     @Data

@@ -118,6 +118,7 @@ public class UserController {
         userVo.setClazz(user.getClazz());
         userVo.setGrade(user.getGrade());
         userVo.setName(user.getName());
+        userVo.setAward(user.getAward());
         userVo.setUsername(user.getUsername());
         UserVo.CFAccount cfAccount = new UserVo.CFAccount();
         for (CFUser cfUser : userList) {
