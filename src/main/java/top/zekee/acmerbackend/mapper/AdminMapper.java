@@ -1,10 +1,9 @@
 package top.zekee.acmerbackend.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import top.zekee.acmerbackend.pojo.CFUser;
-import top.zekee.acmerbackend.pojo.Contest;
-import top.zekee.acmerbackend.pojo.Problem;
-import top.zekee.acmerbackend.pojo.ProblemStatistic;
+import top.zekee.acmerbackend.pojo.*;
+import top.zekee.acmerbackend.vo.AdminCFUserVo;
+import top.zekee.acmerbackend.vo.AdminUserVo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,4 +19,13 @@ public interface AdminMapper {
 
     void updateCFUsers(List<CFUser> cfUsers);
 
+    void updateUser(User u);
+
+    List<AdminCFUserVo> findAllCFUser();
+
+    void deleteCFUser(String handle);
+
+    List<AdminUserVo> findAllUser();
+
+    void updateCFRanking(List<CFUserRanking> results);
 }

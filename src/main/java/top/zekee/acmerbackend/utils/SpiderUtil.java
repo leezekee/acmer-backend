@@ -4,10 +4,11 @@ import org.springframework.web.client.RestTemplate;
 import top.zekee.acmerbackend.dto.CFProblemDto;
 import top.zekee.acmerbackend.dto.CFContestDto;
 import top.zekee.acmerbackend.dto.CFUserInfoDto;
-import top.zekee.acmerbackend.pojo.CFResultBean;
+import top.zekee.acmerbackend.dto.CFUserRankingDto;
 import top.zekee.acmerbackend.pojo.ProblemStatistic;
 import top.zekee.acmerbackend.pojo.Problem;
 import top.zekee.acmerbackend.vo.CFUserInfoVo;
+import top.zekee.acmerbackend.vo.CFUserRankingVo;
 import top.zekee.acmerbackend.vo.ContestsVo;
 import top.zekee.acmerbackend.vo.ProblemsVo;
 
@@ -17,6 +18,7 @@ public class SpiderUtil {
     static String PROBLEM_URL = "https://codeforces.com/api/problemset.problems";
     static String CONTEST_URL = "https://codeforces.com/api/contest.list";
     static String USER_INFO_URL = "https://codeforces.com/api/user.info?handles=";
+    static String USER_RANKING_URL = "https://codeforces.com/api/user.rating?handle=";
 
     public ProblemsVo getCFProblems() {
         RestTemplate restTemplate = new RestTemplate();
@@ -85,5 +87,18 @@ public class SpiderUtil {
         response.setCfUsers(result.getResult());
 
         return response;
+    }
+
+    public CFUserRankingVo getCFUserRanking(List<String> handles)  {
+        RestTemplate restTemplate = new RestTemplate();
+        CFUserRankingVo cfUserRankingVo = new CFUserRankingVo();
+        for (String handle : handles) {
+            CFUserRankingDto result = restTemplate.getForObject(USER_RANKING_URL + handle, CFUserRankingDto.class);
+            if (result == null || !result.getStatus().equals("OK")) {
+                return null;
+            }
+            cfUserRankingVo.addResults(result.getResult());
+        }
+        return cfUserRankingVo;
     }
 }

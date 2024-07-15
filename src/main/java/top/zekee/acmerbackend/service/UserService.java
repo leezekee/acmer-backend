@@ -1,9 +1,13 @@
 package top.zekee.acmerbackend.service;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.zekee.acmerbackend.mapper.UserMapper;
 import top.zekee.acmerbackend.pojo.CFUser;
+import top.zekee.acmerbackend.pojo.CFUserRanking;
+import top.zekee.acmerbackend.pojo.PageBean;
 import top.zekee.acmerbackend.pojo.User;
 
 import java.util.List;
@@ -74,7 +78,21 @@ public class UserService {
         return userMapper.findAll();
     }
 
+    public PageBean<User> findAllUser(Integer pageNum, Integer pageSize) {
+        PageBean<User> pageBean = new PageBean<>();
+        PageHelper.startPage(pageNum, pageSize);
+        List<User> users = userMapper.findAllUser();
+        Page<User> page = (Page<User>) users;
+        pageBean.setTotal(page.getTotal());
+        pageBean.setItems(page.getResult());
+        return pageBean;
+    }
+
     public void updateUserRankById(Integer id, Integer ranking) {
         userMapper.updateUserRankById(id, ranking);
+    }
+
+    public List<CFUserRanking> getCFUserRanking(String handle) {
+        return userMapper.findCfUserRankingByHandle(handle);
     }
 }

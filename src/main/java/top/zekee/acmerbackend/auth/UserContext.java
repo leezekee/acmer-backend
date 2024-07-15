@@ -26,7 +26,7 @@ public class UserContext {
     public User getCurrentUser() {
         Map<String, Object> claims = ThreadLocalUtil.get();
         Integer id = (Integer) claims.get("id");
-        log.info("Current id: {}", id);
+//        log.info("Current id: {}", id);
         return userService.findUserById(id);
     }
 }

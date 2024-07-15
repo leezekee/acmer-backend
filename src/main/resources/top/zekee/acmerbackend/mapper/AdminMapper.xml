@@ -2,6 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="top.zekee.acmerbackend.mapper.AdminMapper">
+    <resultMap id="adminCFUserMap" type="top.zekee.acmerbackend.vo.AdminCFUserVo">
+        <id property="id" column="id"/>
+        <result property="handle" column="handle"/>
+        <result property="email" column="email"/>
+        <result property="vkId" column="vk_id"/>
+        <result property="openId" column="open_id"/>
+        <result property="firstName" column="first_name"/>
+        <result property="lastName" column="last_name"/>
+        <result property="country" column="country"/>
+        <result property="city" column="city"/>
+        <result property="organization" column="organization"/>
+        <result property="contribution" column="contribution"/>
+        <result property="rank" column="rank"/>
+        <result property="rating" column="rating"/>
+        <result property="maxRank" column="max_rank"/>
+        <result property="maxRating" column="max_rating"/>
+        <result property="lastOnlineTimeSeconds" column="last_online_time_seconds"/>
+        <result property="registrationTimeSeconds" column="registration_time_seconds"/>
+        <result property="friendOfCount" column="friend_of_count"/>
+        <result property="avatar" column="avatar"/>
+        <result property="titlePhoto" column="title_photo"/>
+        <result property="holder" column="holder"/>
+        <result property="accountType" column="account_type"/>
+        <association property="user" javaType="top.zekee.acmerbackend.pojo.User">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+        </association>
+    </resultMap>
 
     <insert id="updateProblems" useGeneratedKeys="true" keyProperty="id">
         replace into tb_problems
@@ -42,6 +70,43 @@
             #{cfUser.holder}, #{cfUser.accountType})
         </foreach>
     </insert>
+    <update id="updateUser">
+        update tb_user
+        <set>
+            <if test="school != null">school = #{school},</if>
+            <if test="clazz != null">clazz = #{clazz},</if>
+            <if test="grade != null">grade = #{grade},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="award != null">award = #{award},</if>
+            <if test="username != null">username = #{username},</if>
+            <if test="cfRanking != null">cf_ranking = #{cfRanking},</if>
+            <if test="auth != null">auth = #{auth},</if>
+        </set>
+        where id = #{id}
+    </update>
+    <insert id="updateCFRanking" useGeneratedKeys="true" keyProperty="id">
+        replace into tb_cf_user_rating
+        (contest_id, contest_name, handle, `rank`, rating_update_time_seconds, old_rating, new_rating)
+        values
+        <foreach collection="results" item="result" separator=",">
+            (#{result.contestId}, #{result.contestName}, #{result.handle},
+            #{result.rank}, #{result.ratingUpdateTimeSeconds}, #{result.oldRating}, #{result.newRating})
+        </foreach>
+    </insert>
+    <delete id="deleteCFUser">
+        delete
+        from tb_cf_user
+        where handle = #{handle}
+    </delete>
+    <select id="findAllCFUser" resultMap="adminCFUserMap">
+        select cu.*, u.id, u.name
+        from tb_cf_user cu, tb_user u
+        where cu.holder = u.id;
+    </select>
+    <select id="findAllUser" resultType="top.zekee.acmerbackend.vo.AdminUserVo">
+        select *
+        from tb_user;
+    </select>
 
 
 </mapper>

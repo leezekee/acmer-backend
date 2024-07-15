@@ -2,6 +2,7 @@ package top.zekee.acmerbackend.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import top.zekee.acmerbackend.pojo.CFUser;
+import top.zekee.acmerbackend.pojo.CFUserRanking;
 import top.zekee.acmerbackend.pojo.User;
 
 import java.util.List;
@@ -29,4 +30,8 @@ public interface UserMapper {
     List<CFUser> findAll();
 
     void updateUserRankById(Integer id, Integer ranking);
+
+    List<User> findAllUser();
+
+    List<CFUserRanking> findCfUserRankingByHandle(String handle);
 }

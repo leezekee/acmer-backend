@@ -100,7 +100,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Response handleException(Exception exception) {
 //        log.error(Arrays.toString(exception.getStackTrace()));
-        log.error(getStackTraceInfo(exception));
+//        log.error(getStackTraceInfo(exception));
         log.error(exception.toString());
         log.error(exception.getMessage());
 //        exception.printStackTrace();
@@ -116,7 +116,9 @@ public class GlobalExceptionHandler {
             sw = new StringWriter();
             pw = new PrintWriter(sw);
             e.printStackTrace(pw);//将出错的栈信息输出到printWriter中
-//            log.error(e.getMessage());
+
+            log.error(e.getMessage());
+            log.error(e.toString());
             pw.flush();
             sw.flush();
 
@@ -131,6 +133,7 @@ public class GlobalExceptionHandler {
                 } catch (IOException e1) {
 //                    e1.printStackTrace();
                     log.error(e1.getMessage());
+                    log.error(e1.toString());
                 }
             }
             if (pw != null) {

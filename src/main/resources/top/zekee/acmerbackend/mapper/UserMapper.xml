@@ -81,4 +81,13 @@
         select *
         from tb_cf_user
     </select>
+    <select id="findAllUser" resultType="top.zekee.acmerbackend.pojo.User">
+        select *
+        from tb_user
+    </select>
+    <select id="findCfUserRankingByHandle" resultType="top.zekee.acmerbackend.pojo.CFUserRanking">
+        select *
+        from tb_cf_user_rating
+        where handle = #{handle};
+    </select>
 </mapper>

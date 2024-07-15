@@ -16,10 +16,7 @@ import top.zekee.acmerbackend.dto.CFAccountDto;
 import top.zekee.acmerbackend.dto.LoginDto;
 import top.zekee.acmerbackend.dto.RegisterDto;
 import top.zekee.acmerbackend.dto.UserUpdateDto;
-import top.zekee.acmerbackend.pojo.CFUser;
-import top.zekee.acmerbackend.pojo.Code;
-import top.zekee.acmerbackend.pojo.Response;
-import top.zekee.acmerbackend.pojo.User;
+import top.zekee.acmerbackend.pojo.*;
 import top.zekee.acmerbackend.service.UserService;
 import top.zekee.acmerbackend.utils.JwtUtil;
 import top.zekee.acmerbackend.utils.Md5Util;
@@ -29,6 +26,7 @@ import top.zekee.acmerbackend.utils.ThreadLocalUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -51,7 +49,7 @@ public class UserController {
 
     @PostMapping("/register")
     @Operation(summary = "用户注册")
-    Response register(@RequestBody @Valid RegisterDto authDto) {
+    public Response register(@RequestBody @Valid RegisterDto authDto) {
         String username = authDto.getUsername();
         String password = authDto.getPassword();
         String rePassword = authDto.getRePassword();
@@ -81,7 +79,7 @@ public class UserController {
 
     @PostMapping("/login")
     @Operation(summary = "用户登录")
-    Response login(@RequestBody @Valid LoginDto authDto) {
+    public Response login(@RequestBody @Valid LoginDto authDto) {
         String username = authDto.getUsername();
         String password = authDto.getPassword();
         User userByUsername = userService.findUserByUsername(username);
@@ -108,9 +106,9 @@ public class UserController {
     @GetMapping("/info")
     @Operation(summary = "获取当前用户信息")
     @RequireLogin
-    Response getUserInfo() {
+    public Response getUserInfo() {
         User user = userContext.getCurrentUser();
-        log.info(user.toString());
+//        log.info(user.toString());
         List<CFUser> userList = userService.findCFACCountByHolder(user.getId());
         UserVo userVo = new UserVo();
         userVo.setId(user.getId());
@@ -120,6 +118,7 @@ public class UserController {
         userVo.setName(user.getName());
         userVo.setAward(user.getAward());
         userVo.setUsername(user.getUsername());
+        userVo.setCfRanking(user.getCfRanking());
         UserVo.CFAccount cfAccount = new UserVo.CFAccount();
         for (CFUser cfUser : userList) {
             if (cfUser.getAccountType() == 1) {
@@ -134,7 +133,7 @@ public class UserController {
 
     @GetMapping("/info/{id}")
     @Operation(summary = "获取指定用户信息")
-    Response getUserInfoById(@PathVariable Integer id) {
+    public Response getUserInfoById(@PathVariable Integer id) {
         User user = userService.findUserById(id);
         return Response.success("获取成功", user);
     }
@@ -142,7 +141,7 @@ public class UserController {
     @PutMapping("/info")
     @Operation(summary = "修改当前用户信息")
     @RequireLogin
-    Response updateUserInfo(@RequestBody UserUpdateDto userUpdateDto) {
+    public Response updateUserInfo(@RequestBody UserUpdateDto userUpdateDto) {
         User user = userContext.getCurrentUser();
 
 
@@ -173,7 +172,7 @@ public class UserController {
     @PostMapping("/cf/add")
     @Operation(summary = "添加cf账号")
     @RequireLogin
-    Response addCFAccount(@RequestBody @Valid CFAccountDto cfAccountDto) {
+    public Response addCFAccount(@RequestBody @Valid CFAccountDto cfAccountDto) {
         User user = userContext.getCurrentUser();
         Integer id = user.getId();
         String handle = cfAccountDto.getHandle();
@@ -181,7 +180,7 @@ public class UserController {
         if (cfUser != null) {
             return Response.error(Code.USERNAME_EXIST, "CF账号已存在");
         }
-        log.info("handle: {}", handle);
+//        log.info("handle: {}", handle);
         userService.addCFAccount(id, handle);
         return Response.success("添加成功");
     }
@@ -189,7 +188,7 @@ public class UserController {
     @DeleteMapping("/cf/delete")
     @Operation(summary = "删除cf账号")
     @RequireLogin
-    Response deleteCFAccount(String cfUsername) {
+    public Response deleteCFAccount(String cfUsername) {
         User user = userContext.getCurrentUser();
         Integer id = user.getId();
         CFUser cfUser = userService.findCFAccountByHandle(cfUsername);
@@ -206,7 +205,7 @@ public class UserController {
     @PostMapping("/cf/setMain")
     @Operation(summary = "设置主cf账号")
     @RequireLogin
-    Response setMainCFAccount(@RequestBody @Valid CFAccountDto cfAccountDto) {
+    public Response setMainCFAccount(@RequestBody @Valid CFAccountDto cfAccountDto) {
         User user = userContext.getCurrentUser();
         Integer id = user.getId();
         String handle = cfAccountDto.getHandle();
@@ -219,5 +218,50 @@ public class UserController {
         }
         userService.setMainCFAccount(id, handle);
         return Response.success("设置成功");
+    }
+
+    @GetMapping("/list")
+    @Operation(summary = "获取用户列表")
+    public Response getUserList(Integer pageNum, Integer pageSize) {
+        PageBean<User> userList = userService.findAllUser(pageNum, pageSize);
+        return Response.success("获取成功", userList);
+    }
+
+    @GetMapping("/rating/contests")
+    @Operation(summary = "获取当前用户各比赛后积分变化")
+    @RequireLogin
+    public Response getCurrentCFUserRanking() {
+        User user = userContext.getCurrentUser();
+        List<CFUser> cfacCountByHolder = userService.findCFACCountByHolder(user.getId());
+        String handle = "";
+        for (CFUser cfUser : cfacCountByHolder) {
+            if (cfUser.getAccountType() == 1) {
+                handle = cfUser.getHandle();
+            }
+        }
+        if (handle.isEmpty()) {
+            return Response.error("未绑定CF账户");
+        }
+        List<CFUserRanking> cfUserRankingList = userService.getCFUserRanking(handle);
+
+        return Response.success("获取成功", cfUserRankingList);
+    }
+
+    @GetMapping("/rating/contests/{id}")
+    @Operation(summary = "获取指定用户各比赛后积分变化")
+    public Response getCFUserRanking(@PathVariable Integer id) {
+        List<CFUser> cfacCountByHolder = userService.findCFACCountByHolder(id);
+        String handle = "";
+        for (CFUser cfUser : cfacCountByHolder) {
+            if (cfUser.getAccountType() == 1) {
+                handle = cfUser.getHandle();
+            }
+        }
+        if (handle.isEmpty()) {
+            return Response.error("未绑定CF账户");
+        }
+        List<CFUserRanking> cfUserRankingList = userService.getCFUserRanking(handle);
+
+        return Response.success("获取成功", cfUserRankingList);
     }
 }

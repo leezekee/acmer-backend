@@ -101,11 +101,16 @@ CREATE TABLE tb_cf_user
     account_type            INT
 );
 
-CREATE TABLE tb_cf_user_and_user
+CREATE TABLE tb_cf_user_rating
 (
-    id         INT PRIMARY KEY AUTO_INCREMENT,
-    user_id    INT,
-    cf_user_id INT
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    contest_id INT,
+    contest_name VARCHAR(255),
+    handle VARCHAR(255),
+    `rank` INT,
+    rating_update_time_seconds BIGINT,
+    old_rating INT,
+    new_rating INT
 );
 
 
