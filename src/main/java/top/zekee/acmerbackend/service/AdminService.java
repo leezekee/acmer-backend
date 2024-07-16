@@ -2,10 +2,12 @@ package top.zekee.acmerbackend.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.zekee.acmerbackend.dto.AdminUserDto;
 import top.zekee.acmerbackend.mapper.AdminMapper;
+import top.zekee.acmerbackend.mapper.ProblemMapper;
 import top.zekee.acmerbackend.mapper.UserMapper;
 import top.zekee.acmerbackend.pojo.*;
 import top.zekee.acmerbackend.utils.SpiderUtil;
@@ -14,17 +16,21 @@ import top.zekee.acmerbackend.vo.*;
 import java.util.*;
 
 @Service
+@Slf4j
 public class AdminService {
     AdminMapper adminMapper;
     UserService userService;
     UserMapper userMapper;
+
+    ProblemMapper problemMapper;
     SpiderUtil spider = new SpiderUtil();
 
     @Autowired
-    public AdminService(AdminMapper adminMapper, UserService userService, UserMapper userMapper) {
+    public AdminService(AdminMapper adminMapper, UserService userService, UserMapper userMapper, ProblemMapper problemMapper) {
         this.adminMapper = adminMapper;
         this.userService = userService;
         this.userMapper = userMapper;
+        this.problemMapper = problemMapper;
     }
 
     public Integer update() {
@@ -39,6 +45,7 @@ public class AdminService {
         }
         CFUserInfoVo cfUserInfoVo = spider.getCFUserInfo(handles);
         CFUserRankingVo cfUserRankingVo = spider.getCFUserRanking(handles);
+        CFSubmissionVo cfSubmissionVo = spider.getCFSubmissions(handles);
         if (problemsVo == null) {
             return 0;
         }
@@ -50,6 +57,9 @@ public class AdminService {
         }
         if (cfUserRankingVo == null) {
             return -2;
+        }
+        if (cfSubmissionVo == null) {
+            return -3;
         }
         adminMapper.updateProblems(problemsVo.getProblems());
         adminMapper.updateProblemStatistics(problemsVo.getProblemStatistics());
@@ -88,6 +98,18 @@ public class AdminService {
         }
 
         adminMapper.updateCFRanking(cfUserRankingVo.getResults());
+        List<CFSubmission> submissions = new ArrayList<>();
+
+        for (CFSubmission submission : cfSubmissionVo.getSubmissions()) {
+//            log.info(submission.toString());
+            Problem problem = problemMapper.findProblemByContestIdAndIndex(submission.getContestId(), submission.getProblemIndex());
+            if (problem != null) {
+                submission.setProblemId(problem.getId());
+                submissions.add(submission);
+            }
+        }
+
+        adminMapper.updateCFSubmissions(submissions);
 
         return 1;
     }

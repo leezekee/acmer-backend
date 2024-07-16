@@ -40,8 +40,11 @@ public class AdminController {
         if (res == 0) {
             return Response.error("更新失败");
         }
-        if (res == -1) {
+        if (res == -1 || res == -2 || res == -3) {
             return Response.error("系统内存在不存在的cf账户");
+        }
+        if (res == -4) {
+            return Response.error("更新失败，对应题目不存在");
         }
         return Response.success("更新成功");
     }

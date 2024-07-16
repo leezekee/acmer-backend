@@ -2,16 +2,18 @@ package top.zekee.acmerbackend.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.zekee.acmerbackend.mapper.UserMapper;
-import top.zekee.acmerbackend.pojo.CFUser;
-import top.zekee.acmerbackend.pojo.CFUserRanking;
-import top.zekee.acmerbackend.pojo.PageBean;
-import top.zekee.acmerbackend.pojo.User;
+import top.zekee.acmerbackend.pojo.*;
+import top.zekee.acmerbackend.vo.CFSubmissionInfoVo;
+import top.zekee.acmerbackend.vo.SubmissionVo;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class UserService {
     UserMapper userMapper;
@@ -94,5 +96,67 @@ public class UserService {
 
     public List<CFUserRanking> getCFUserRanking(String handle) {
         return userMapper.findCfUserRankingByHandle(handle);
+    }
+
+    public List<CFSubmission> getWeeklySubmissions() {
+        // 获取当前时间戳
+        long currentTime = System.currentTimeMillis() / 1000;
+        // 获取一周前的时间戳
+        long lastWeekTime = currentTime - 7 * 24 * 60 * 60;
+        return userMapper.findWeeklySubmissions(lastWeekTime);
+
+    }
+
+    public List<SubmissionVo> countWeeklySubmissions(List<CFSubmission> weeklySubmissions) {
+        long currentTime = System.currentTimeMillis() / 1000;
+        long timeStartSeconds = currentTime - 6 * 24 * 60 * 60;
+//        long dayTwo = currentTime - 6 * 24 * 60 * 60 * 1000;
+//        long dayThree = currentTime - 5 * 24 * 60 * 60 * 1000;
+//        long dayFour = currentTime - 4 * 24 * 60 * 60 * 1000;
+//        long dayFive = currentTime - 3 * 24 * 60 * 60 * 1000;
+//        long daySix = currentTime - 2 * 24 * 60 * 60 * 1000;
+//        long daySeven = currentTime - 24 * 60 * 60 * 1000;
+        List<SubmissionVo> submissionVos = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            submissionVos.add(new SubmissionVo());
+        }
+        // 根据createTimeSeconds升序排序
+        weeklySubmissions.sort((o1, o2) -> (int) (o1.getCreationTimeSeconds() - o2.getCreationTimeSeconds()));
+        int index = 0;
+        for (int i = 0; i < 7; i++) {
+            for (; index < weeklySubmissions.size(); index++) {
+                if (weeklySubmissions.get(index).getCreationTimeSeconds() > timeStartSeconds) {
+                    break;
+                }
+                CFSubmission cfSubmission = weeklySubmissions.get(index);
+                String verdict = cfSubmission.getVerdict();
+                String participantType = cfSubmission.getParticipantType();
+                if ("OK".equals(verdict)) {
+                    if ("CONTESTANT".equals(participantType)) {
+                        submissionVos.get(i).addAcInContest();
+                    } else {
+                        submissionVos.get(i).addAcInMakeup();
+                    }
+                } else {
+                    if ("CONTESTANT".equals(participantType)) {
+                        submissionVos.get(i).addWaInContest();
+                    } else {
+                        submissionVos.get(i).addWaInMakeup();
+                    }
+                }
+            }
+            timeStartSeconds += 24 * 60 * 60;
+        }
+        return submissionVos;
+    }
+
+    public PageBean<CFSubmissionInfoVo> getSubmissions(List<String> handles, Integer pageNum, Integer pageSize) {
+        PageBean<CFSubmissionInfoVo> pageBean = new PageBean<>();
+        PageHelper.startPage(pageNum, pageSize);
+        List<CFSubmissionInfoVo> cfSubmissions = userMapper.findSubmissionsByHandles(handles);
+        Page<CFSubmissionInfoVo> page = (Page<CFSubmissionInfoVo>) cfSubmissions;
+        pageBean.setTotal(page.getTotal());
+        pageBean.setItems(page.getResult());
+        return pageBean;
     }
 }

@@ -1,9 +1,11 @@
 package top.zekee.acmerbackend.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import top.zekee.acmerbackend.pojo.CFSubmission;
 import top.zekee.acmerbackend.pojo.CFUser;
 import top.zekee.acmerbackend.pojo.CFUserRanking;
 import top.zekee.acmerbackend.pojo.User;
+import top.zekee.acmerbackend.vo.CFSubmissionInfoVo;
 
 import java.util.List;
 
@@ -34,4 +36,8 @@ public interface UserMapper {
     List<User> findAllUser();
 
     List<CFUserRanking> findCfUserRankingByHandle(String handle);
+
+    List<CFSubmission> findWeeklySubmissions(long lastWeekTimeSeconds);
+
+    List<CFSubmissionInfoVo> findSubmissionsByHandles(List<String> handles);
 }

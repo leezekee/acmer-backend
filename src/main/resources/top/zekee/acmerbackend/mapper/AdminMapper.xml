@@ -84,6 +84,16 @@
         </set>
         where id = #{id}
     </update>
+    <insert id="updateCFSubmissions" parameterType="top.zekee.acmerbackend.pojo.CFSubmission">
+        replace into tb_cf_submission
+        (contest_id, creation_time_seconds, problem_id, handle, participant_type, programming_language, verdict, time_consumed_millis, passed_test_count)
+        values
+            <foreach collection="submissions" item="submission" separator=",">
+                (#{submission.contestId}, #{submission.creationTimeSeconds}, #{submission.problemId}, #{submission.handle},
+                #{submission.participantType}, #{submission.programmingLanguage}, #{submission.verdict},
+                #{submission.timeConsumedMillis}, #{submission.passedTestCount})
+            </foreach>
+    </insert>
     <insert id="updateCFRanking" useGeneratedKeys="true" keyProperty="id">
         replace into tb_cf_user_rating
         (contest_id, contest_name, handle, `rank`, rating_update_time_seconds, old_rating, new_rating)
@@ -101,11 +111,11 @@
     <select id="findAllCFUser" resultMap="adminCFUserMap">
         select cu.*, u.id, u.name
         from tb_cf_user cu, tb_user u
-        where cu.holder = u.id;
+        where cu.holder = u.id
     </select>
     <select id="findAllUser" resultType="top.zekee.acmerbackend.vo.AdminUserVo">
         select *
-        from tb_user;
+        from tb_user
     </select>
 
 

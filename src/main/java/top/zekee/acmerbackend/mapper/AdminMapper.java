@@ -28,4 +28,6 @@ public interface AdminMapper {
     List<AdminUserVo> findAllUser();
 
     void updateCFRanking(List<CFUserRanking> results);
+
+    void updateCFSubmissions(List<CFSubmission> submissions);
 }

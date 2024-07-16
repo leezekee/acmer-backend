@@ -20,13 +20,12 @@ import top.zekee.acmerbackend.pojo.*;
 import top.zekee.acmerbackend.service.UserService;
 import top.zekee.acmerbackend.utils.JwtUtil;
 import top.zekee.acmerbackend.utils.Md5Util;
+import top.zekee.acmerbackend.vo.CFSubmissionInfoVo;
+import top.zekee.acmerbackend.vo.SubmissionVo;
 import top.zekee.acmerbackend.vo.UserVo;
 import top.zekee.acmerbackend.utils.ThreadLocalUtil;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -121,6 +120,7 @@ public class UserController {
         userVo.setCfRanking(user.getCfRanking());
         UserVo.CFAccount cfAccount = new UserVo.CFAccount();
         for (CFUser cfUser : userList) {
+            log.info(cfUser.toString());
             if (cfUser.getAccountType() == 1) {
                 cfAccount.setMainAccount(cfUser);
             } else {
@@ -264,4 +264,46 @@ public class UserController {
 
         return Response.success("获取成功", cfUserRankingList);
     }
+
+    @GetMapping("/submissions/weekly")
+    @Operation(summary = "获取所用用户本周提交情况")
+    public Response getWeeklySubmissions() {
+        List<CFSubmission> weeklySubmissions = userService.getWeeklySubmissions();
+        List<SubmissionVo> weekSubmission = userService.countWeeklySubmissions(weeklySubmissions);
+        return Response.success("获取成功", weekSubmission);
+    }
+
+    @GetMapping("/submission")
+    @Operation(summary = "获取当前用户提交情况")
+    @RequireLogin
+    public Response getSubmission(Integer pageNum, Integer pageSize) {
+        User user = userContext.getCurrentUser();
+        List<CFUser> cfAccountByHolder = userService.findCFACCountByHolder(user.getId());
+        List<String> handles = new ArrayList<>();
+        for (CFUser cfUser : cfAccountByHolder) {
+            handles.add(cfUser.getHandle());
+        }
+        if (handles.isEmpty()) {
+            return Response.error("未绑定CF账户");
+        }
+        PageBean<CFSubmissionInfoVo> response = userService.getSubmissions(handles, pageNum, pageSize);
+        return Response.success("获取成功", response);
+    }
+
+    @GetMapping("/submission/{id}")
+    @Operation(summary = "获取指定用户提交情况")
+    public Response getSubmissionById(@PathVariable Integer id, Integer pageNum, Integer pageSize) {
+        List<CFUser> cfAccountByHolder = userService.findCFACCountByHolder(id);
+        List<String> handles = new ArrayList<>();
+        for (CFUser cfUser : cfAccountByHolder) {
+            handles.add(cfUser.getHandle());
+        }
+        if (handles.isEmpty()) {
+            return Response.error("未绑定CF账户");
+        }
+        PageBean<CFSubmissionInfoVo> response = userService.getSubmissions(handles, pageNum, pageSize);
+        return Response.success("获取成功", response);
+    }
+
+
 }

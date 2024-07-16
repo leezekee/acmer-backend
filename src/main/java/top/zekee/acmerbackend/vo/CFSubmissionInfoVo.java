@@ -1,15 +1,13 @@
-package top.zekee.acmerbackend.pojo;
+package top.zekee.acmerbackend.vo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-
-import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class CFSubmission {
+@NoArgsConstructor
+public class CFSubmissionInfoVo {
     private Integer contestId;
     private Long creationTimeSeconds;
     private Integer problemId;
@@ -20,4 +18,5 @@ public class CFSubmission {
     private Integer passedTestCount;
     private Long timeConsumedMillis;
     private String problemIndex;
+    private Integer accountType;
 }

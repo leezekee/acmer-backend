@@ -26,14 +26,15 @@ CREATE TABLE tb_user
 -- 题目表
 CREATE TABLE tb_problems
 (
-    id        INT PRIMARY KEY AUTO_INCREMENT,
+    id        INT UNIQUE AUTO_INCREMENT,
     contest_id INT,
     `index`   VARCHAR(255),
     name      VARCHAR(255),
     `type`    VARCHAR(255),
     points    FLOAT,
     rating    INT,
-    tags      VARCHAR(255)
+    tags      VARCHAR(255),
+    primary key (contest_id, `index`)
 );
 
 -- 比赛表
@@ -49,20 +50,6 @@ CREATE TABLE tb_contest
     frozen              BOOL                            -- 是否冻结
 );
 
--- 用户排名表
-CREATE TABLE tb_user_ranking
-(
-    id             INT PRIMARY KEY AUTO_INCREMENT, -- 排名ID
-    ranking        INT,                            -- 分数
-    school         VARCHAR(255),                   -- 学校
-    class          VARCHAR(255),                   -- 班级
-    username       VARCHAR(255),                   -- 用户名
-    contest_number INT,                            -- 比赛次数
-    accept_number  INT,                            -- 解题数
-    makeup_number  INT,                            -- 补题数
-    owner          VARCHAR(255),                   -- 账户持有者
-    account_type   VARCHAR(255)                    -- 帐号类型
-);
 
 -- 题目统计数据
 CREATE TABLE tb_problem_statistics
@@ -73,12 +60,9 @@ CREATE TABLE tb_problem_statistics
     solved_count INT
 );
 
-drop table tb_cf_user;
-
 CREATE TABLE tb_cf_user
 (
-    id                      INT PRIMARY KEY AUTO_INCREMENT,
-    handle                  VARCHAR(255) NOT NULL UNIQUE,
+    handle                  VARCHAR(255) NOT NULL PRIMARY KEY,
     email                   VARCHAR(255),
     vkId                    VARCHAR(255),
     openId                  VARCHAR(255),
@@ -111,6 +95,20 @@ CREATE TABLE tb_cf_user_rating
     rating_update_time_seconds BIGINT,
     old_rating INT,
     new_rating INT
+);
+
+CREATE TABLE tb_cf_submission
+(
+    contest_id INT,
+    creation_time_seconds BIGINT,
+    problem_id INT,
+    handle VARCHAR(255),
+    participant_type VARCHAR(255),
+    programming_language VARCHAR(255),
+    verdict VARCHAR(255),
+    time_consumed_millis BIGINT,
+    passed_test_count INT,
+    PRIMARY KEY (contest_id, handle, problem_id, participant_type, creation_time_seconds)
 );
 
 

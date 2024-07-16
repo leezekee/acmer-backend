@@ -9,4 +9,6 @@ import java.util.List;
 @Mapper
 public interface ProblemMapper {
     List<Problem> findProblems(ProblemFilterDto problemFilterDto);
+
+    Problem findProblemByContestIdAndIndex(Integer contestId, String index);
 }

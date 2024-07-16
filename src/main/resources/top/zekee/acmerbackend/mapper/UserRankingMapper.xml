@@ -9,7 +9,7 @@
         <result column="holder" property="holder"/>
         <result column="rating" property="rating"/>
         <association property="user" javaType="top.zekee.acmerbackend.pojo.User">
-            <id column="id" property="id"/>
+            <id column="user_id" property="id"/>
             <result column="name" property="name"/>
             <result column="school" property="school"/>
             <result column="clazz" property="clazz"/>
@@ -28,7 +28,7 @@
                cu.handle,
                cu.holder,
                cu.rating,
-               u.id,
+               u.id as user_id,
                u.name,
                u.school,
                u.clazz,

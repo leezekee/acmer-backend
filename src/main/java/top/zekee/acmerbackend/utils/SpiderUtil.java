@@ -1,24 +1,23 @@
 package top.zekee.acmerbackend.utils;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import top.zekee.acmerbackend.dto.CFProblemDto;
-import top.zekee.acmerbackend.dto.CFContestDto;
-import top.zekee.acmerbackend.dto.CFUserInfoDto;
-import top.zekee.acmerbackend.dto.CFUserRankingDto;
+import top.zekee.acmerbackend.dto.*;
+import top.zekee.acmerbackend.pojo.CFSubmission;
 import top.zekee.acmerbackend.pojo.ProblemStatistic;
 import top.zekee.acmerbackend.pojo.Problem;
-import top.zekee.acmerbackend.vo.CFUserInfoVo;
-import top.zekee.acmerbackend.vo.CFUserRankingVo;
-import top.zekee.acmerbackend.vo.ContestsVo;
-import top.zekee.acmerbackend.vo.ProblemsVo;
+import top.zekee.acmerbackend.vo.*;
 
 import java.util.List;
 
+@Slf4j
 public class SpiderUtil {
     static String PROBLEM_URL = "https://codeforces.com/api/problemset.problems";
     static String CONTEST_URL = "https://codeforces.com/api/contest.list";
     static String USER_INFO_URL = "https://codeforces.com/api/user.info?handles=";
     static String USER_RANKING_URL = "https://codeforces.com/api/user.rating?handle=";
+    static String USER_SUBMISSION_URL = "https://codeforces.com/api/user.status?handle=";
 
     public ProblemsVo getCFProblems() {
         RestTemplate restTemplate = new RestTemplate();
@@ -100,5 +99,22 @@ public class SpiderUtil {
             cfUserRankingVo.addResults(result.getResult());
         }
         return cfUserRankingVo;
+    }
+
+    public CFSubmissionVo getCFSubmissions(List<String> handles) {
+        RestTemplate restTemplate = new RestTemplate();
+        CFSubmissionVo cfSubmissionVo = new CFSubmissionVo();
+        for (String handle : handles) {
+            CFSubmissionDto result = restTemplate.getForObject(USER_SUBMISSION_URL + handle, CFSubmissionDto.class);
+            if (result == null || !result.getStatus().equals("OK")) {
+                return null;
+            }
+//            log.info(result.toString());
+            for (CFSubmissionDto.CFSubmissionDtoResult submissionDtoResult : result.getResult()) {
+                CFSubmission submission = submissionDtoResult.toSubmission();
+                cfSubmissionVo.addSubmission(submission);
+            }
+        }
+        return cfSubmissionVo;
     }
 }

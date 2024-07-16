@@ -100,7 +100,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Response handleException(Exception exception) {
 //        log.error(Arrays.toString(exception.getStackTrace()));
-//        log.error(getStackTraceInfo(exception));
+        log.error(getStackTraceInfo(exception));
         log.error(exception.toString());
         log.error(exception.getMessage());
 //        exception.printStackTrace();
