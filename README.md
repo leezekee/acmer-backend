@@ -19,15 +19,15 @@ server {
     listen 443 ssl;
     server_name acmer.leezekee.top;
 
-    ssl_certificate path/to/pem;
-    ssl_certificate_key path/to/key;
+    ssl_certificate /path/to/pem;
+    ssl_certificate_key /path/to/key;
     ssl_session_timeout 5m;
     ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;
     ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
     ssl_prefer_server_ciphers on;
 
     location / {
-        root /home/leezekee/acmer/dist;
+        root /path/to/root;
         index index.html;
         try_files $uri $uri/ /index.html;
     }
